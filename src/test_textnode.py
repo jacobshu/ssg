@@ -1,6 +1,6 @@
 import unittest
 
-from textnode import TextNode, TextType
+from textnode import TextNode, TextType, text_node_to_html_node
 
 class TestTextNode(unittest.TestCase):
     def test_eq(self):
@@ -26,5 +26,19 @@ class TestTextNode(unittest.TestCase):
         self.assertEqual(repr(node2), "TextNode(image, image, https://site.image)")
         self.assertEqual(repr(node3), "TextNode(rm -rf, code, None)")
 
+    def test_text_node_to_html_node(self):
+        text = text_node_to_html_node(TextNode("text node", TextType.TEXT)).to_html()
+        bold = text_node_to_html_node(TextNode("bold node", TextType.BOLD)).to_html()
+        italic = text_node_to_html_node(TextNode("italic node", TextType.ITALIC)).to_html()
+        code = text_node_to_html_node(TextNode("code node", TextType.CODE)).to_html()
+        link = text_node_to_html_node(TextNode("link node", TextType.LINK, "target.ninja")).to_html()
+        image = text_node_to_html_node(TextNode("image node", TextType.IMAGE, "image.com")).to_html()
+
+        self.assertEqual(text, "text node")
+        self.assertEqual(bold, "<b>bold node</b>")
+        self.assertEqual(italic, "<i>italic node</i>")
+        self.assertEqual(code, "<code>code node</code>")
+        self.assertEqual(link, "<a href=\"target.ninja\">link node</a>")
+        self.assertEqual(image, "<img src=\"image.com\" alt=\"image node\"></img>")
 if __name__ == "__main__":
     unittest.main()
